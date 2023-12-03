@@ -58,7 +58,7 @@ fn map_spelled_digits(line: &str) -> anyhow::Result<String> {
         };
         match digit {
             Some(d) => {
-                ret_str.push(*d);
+                ret_str.push(d);
             }
             None => {
                 ret_str.push(line.chars().nth(out_indx).unwrap());
