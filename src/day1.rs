@@ -10,10 +10,15 @@ pub async fn part1(input_file: &Path) -> anyhow::Result<u64> {
 }
 pub async fn part2(input_file: &Path) -> anyhow::Result<u64> {
     let content = tokio::fs::read_to_string(input_file).await?;
-    let sum = content.lines().map(|line| map_spelled_digits(line)).filter(|res| res.is_ok()).map(|el| el.unwrap()).fold(0, |acc, line| {
-        let calib_number = line_to_calib_num(&line).unwrap_or(0);
-        acc + calib_number
-    });
+    let sum = content
+        .lines()
+        .map(|line| map_spelled_digits(line))
+        .filter(|res| res.is_ok())
+        .map(|el| el.unwrap())
+        .fold(0, |acc, line| {
+            let calib_number = line_to_calib_num(&line).unwrap_or(0);
+            acc + calib_number
+        });
     Ok(sum)
 }
 
@@ -101,12 +106,12 @@ mod test {
     fn map_spelled_single() {
         let map_spelled = map_spelled_digits("asseven23");
         assert!(map_spelled.is_ok());
-        assert_eq!(map_spelled.unwrap(), "as723");
+        assert_eq!(map_spelled.unwrap(), "as7even23");
     }
     #[test]
     fn map_spelled_multi() {
         let map_spelled = map_spelled_digits("asseven23onetwoeight");
         assert!(map_spelled.is_ok());
-        assert_eq!(map_spelled.unwrap(), "as723128");
+        assert_eq!(map_spelled.unwrap(), "as7even231ne2wo8ight");
     }
 }
