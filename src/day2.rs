@@ -6,7 +6,7 @@ pub async fn part1(input_file: &Path) -> anyhow::Result<u32> {
     let (max_r, max_g, max_b) = (12, 13, 14);
     let id_sum = content
         .lines()
-        .map( GameOutcome::try_from)
+        .map(GameOutcome::try_from)
         .filter_map(|el| el.ok())
         .filter(|el| el.is_possibile(max_r, max_g, max_b))
         .map(|el| el.id)
@@ -172,7 +172,7 @@ mod test {
         let game = parse_res.unwrap();
         let expected_game = GameOutcome {
             id: 1,
-            dispositions: vec![CubesDisposition::new(4, 0, 3)],
+            dispositions: vec![CubesDisposition::new(Some(4), None, Some(3))],
         };
         assert_eq!(game, expected_game);
     }
@@ -189,9 +189,9 @@ mod test {
         let expected_game = GameOutcome {
             id: 3,
             dispositions: vec![
-                CubesDisposition::new(20, 8, 6),
-                CubesDisposition::new(4, 13, 5),
-                CubesDisposition::new(1, 5, 0),
+                CubesDisposition::new(Some(20), Some(8), Some(6)),
+                CubesDisposition::new(Some(4), Some(13), Some(5)),
+                CubesDisposition::new(Some(1), Some(5), None),
             ],
         };
         assert_eq!(game, expected_game);
@@ -206,8 +206,8 @@ mod test {
             format!("parsing error: {}", parse_res.unwrap_err())
         );
         let cubes = parse_res.unwrap();
-        assert_eq!(cubes.red, 1, "checking red cubes");
-        assert_eq!(cubes.green, 2, "checking green cubes");
-        assert_eq!(cubes.blue, 6, "checking blue cubes");
+        assert_eq!(cubes.red, Some(1), "checking red cubes");
+        assert_eq!(cubes.green, Some(2), "checking green cubes");
+        assert_eq!(cubes.blue, Some(6), "checking blue cubes");
     }
 }
