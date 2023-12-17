@@ -39,6 +39,8 @@ async fn main() -> anyhow::Result<()> {
             let input_path = Path::new("./input/day4.txt");
             let p1_answer = day4::part1(input_path).await?;
             println!("Day 4 part 1: {p1_answer}");
+            let p2_answer = day4::part2(input_path).await?;
+            println!("Day 4 part 2: {p2_answer}");
         }
         _ => return Err(anyhow!("{} is not a valid day value", day)),
     };

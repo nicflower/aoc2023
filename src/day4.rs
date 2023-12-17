@@ -10,7 +10,17 @@ pub async fn part1(input_file: &Path) -> anyhow::Result<u32> {
     let total_score = scartch_cards.iter().map(|card| card.score()).sum();
     Ok(total_score)
 }
-#[derive(Debug)]
+pub async fn part2(input_file: &Path) -> anyhow::Result<usize> {
+    let content = tokio::fs::read_to_string(input_file).await?;
+    let lines: Vec<&str> = content.lines().collect();
+    let scartch_cards = lines
+        .iter()
+        .map(|line| ScratchCard::try_from_line(line))
+        .collect::<Result<Vec<ScratchCard>, _>>()?;
+    let processed_cards = ScratchCard::bulk_process(scartch_cards);
+    Ok(processed_cards.len())
+}
+#[derive(Debug, Clone)]
 struct ScratchCard {
     id: u16,
     winning_numbers: Vec<u8>,
@@ -26,12 +36,41 @@ impl ScratchCard {
         }
     }
 
-    pub fn score(&self) -> u32 {
-        let matching_nums = self
-            .winning_numbers
+    pub fn bulk_process(mut cards: Vec<Self>) -> Vec<Self> {
+        let mut indx = 0;
+        let original_len = cards.len();
+        while indx < cards.len() {
+            let mut new_cards = cards[indx].process_card(&cards[..original_len]);
+            cards.append(&mut new_cards);
+            indx += 1;
+        }
+        cards
+    }
+
+    pub fn process_card(&self, all_cards: &[Self]) -> Vec<Self> {
+        let matching_nums = self.matching_nums();
+        if matching_nums == 0 {
+            return vec![];
+        }
+        let to_find_id = (1..=matching_nums)
+            .map(|el| el as u16 + self.id)
+            .collect::<Vec<u16>>();
+        to_find_id
+            .iter()
+            .filter_map(|id| all_cards.iter().find(|el| el.id == *id))
+            .cloned()
+            .collect()
+    }
+
+    pub fn matching_nums(&self) -> usize {
+        self.winning_numbers
             .iter()
             .filter(|el| self.my_numbers.iter().any(|my_num| my_num == *el))
-            .count();
+            .count()
+    }
+
+    pub fn score(&self) -> u32 {
+        let matching_nums = self.matching_nums();
 
         if matching_nums == 0 {
             return 0;
