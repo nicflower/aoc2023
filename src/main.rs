@@ -3,6 +3,7 @@ use std::path::Path;
 pub mod day1;
 pub mod day2;
 pub mod day3;
+mod day4;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> anyhow::Result<()> {
@@ -33,6 +34,11 @@ async fn main() -> anyhow::Result<()> {
             println!("Day 3 part 1: {p1_answer}");
             let p2_answer = day3::part2(input_path).await?;
             println!("Day 3 part 2: {p2_answer}");
+        }
+        4 => {
+            let input_path = Path::new("./input/day4.txt");
+            let p1_answer = day4::part1(input_path).await?;
+            println!("Day 4 part 1: {p1_answer}");
         }
         _ => return Err(anyhow!("{} is not a valid day value", day)),
     };
