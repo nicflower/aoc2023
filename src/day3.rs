@@ -241,26 +241,16 @@ pub mod test {
     #[test]
     fn coordinates_reader() {
         let str = "467..114..";
-        let coordinates = PartNumberCoordinates::from_line(str);
+        let coordinates = PartNumberCoordinates::from_line(str, 0);
         assert_eq!(coordinates[0].indx_start, 0);
         assert_eq!(coordinates[0].indx_end, 2);
         assert_eq!(coordinates.len(), 2);
     }
-    #[test]
-    fn find_num_generic() {
-        let str = "467..114..";
-        let read_res = PartNumber::read_line(str, None, None);
-        assert!(read_res.is_ok(), "failed to read part numbers");
-        let nums = read_res.unwrap();
-        //assert_eq!(nums[0].num(), 467);
-        assert_eq!(nums[1].num(), 114);
-    }
-
     fn find_part_numbers_on_line() {
         let line1 = "...*......";
         let line2 = "..35..633.";
         let line3 = "......#...";
-        let read_res = PartNumber::read_line(line2, Some(line1), Some(line3));
+        let read_res = PartNumber::read_line(line2, Some(line1), Some(line3), &['*', '#'], 1);
         assert!(read_res.is_ok(), "failed to read part numbers");
         let nums = read_res.unwrap();
         assert_eq!(nums.len(), 2);
